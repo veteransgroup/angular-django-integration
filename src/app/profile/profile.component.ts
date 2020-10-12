@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UploadService } from '../upload.service';
+import { FileUploader, FileLikeObject } from 'ng2-file-upload';
+import { concat } from  'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -45,6 +47,39 @@ export class ProfileComponent implements OnInit {
       }
     );
   }
+  ///////////////////////////////////////////////////
+  ///https://www.techiediaries.com/angular-django-formdata-multiple-file-upload-tutorial////////
 
+  public uploader: FileUploader = new FileUploader({});
+  public hasBaseDropZoneOver: boolean = false;
 
+  fileOverBase(event):  void {
+      this.hasBaseDropZoneOver  =  event;
+  }
+
+  getFiles(): FileLikeObject[] {
+    return this.uploader.queue.map((fileItem) => {
+      return fileItem.file;
+    });
+  }
+
+  upload() {   
+    let files = this.getFiles();
+    console.log(files);
+    let requests = [];
+    files.forEach((file) => {
+      let formData = new FormData();
+      formData.append('file' , file.rawFile, file.name);
+      requests.push(this.uploadService.upload(formData));     
+    });
+
+    concat(...requests).subscribe(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {  
+        console.log(err);
+      }
+    );
+  }
 }
