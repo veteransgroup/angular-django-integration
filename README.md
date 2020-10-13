@@ -1,4 +1,4 @@
-# Django & Angular File Upload Example
+# Django & Angular structure demonstration
 
 # It is a demo show how to integrate Django and Angular.
 
